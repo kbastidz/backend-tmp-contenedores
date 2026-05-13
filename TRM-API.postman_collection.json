@@ -1,0 +1,1542 @@
+{
+  "info": {
+    "name": "Terminal Risk Monitor — API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "terminal_id",
+      "value": ""
+    },
+    {
+      "key": "usuario_id",
+      "value": ""
+    },
+    {
+      "key": "area_id",
+      "value": ""
+    },
+    {
+      "key": "equipo_id",
+      "value": ""
+    },
+    {
+      "key": "riesgo_id",
+      "value": ""
+    },
+    {
+      "key": "incidente_id",
+      "value": ""
+    },
+    {
+      "key": "plan_id",
+      "value": ""
+    },
+    {
+      "key": "tarea_id",
+      "value": ""
+    },
+    {
+      "key": "escalamiento_id",
+      "value": ""
+    },
+    {
+      "key": "accion_id",
+      "value": ""
+    },
+    {
+      "key": "control_id",
+      "value": ""
+    },
+    {
+      "key": "kri_id",
+      "value": ""
+    },
+    {
+      "key": "reporte_id",
+      "value": ""
+    },
+    {
+      "key": "zona_id",
+      "value": ""
+    },
+    {
+      "key": "marcador_id",
+      "value": ""
+    },
+    {
+      "key": "comentario_id",
+      "value": ""
+    },
+    {
+      "key": "notificacion_id",
+      "value": ""
+    },
+    {
+      "key": "adjunto_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "🟢 Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏭 Terminales",
+      "item": [
+        {
+          "name": "Listar terminales",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('terminal_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/terminales"
+          }
+        },
+        {
+          "name": "Crear terminal",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('terminal_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/terminales",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Terminal Norte\",\n  \"codigo\": \"TN-01\",\n  \"ubicacion\": \"Zona Industrial Norte\",\n  \"activa\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Obtener terminal por ID",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/terminales/{{terminal_id}}"
+          }
+        },
+        {
+          "name": "Actualizar terminal",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/terminales/{{terminal_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Terminal Norte Actualizada\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar terminal",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/terminales/{{terminal_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏢 Áreas",
+      "item": [
+        {
+          "name": "Listar áreas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('area_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/areas?terminal_id={{terminal_id}}"
+          }
+        },
+        {
+          "name": "Crear área",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('area_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/areas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Operaciones\",\n  \"descripcion\": \"Área de operaciones portuarias\",\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"activa\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Actualizar área",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/areas/{{area_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Área de operaciones y logística\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar área",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/areas/{{area_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "⚙️ Equipos",
+      "item": [
+        {
+          "name": "Listar equipos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('equipo_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/equipos?terminal_id={{terminal_id}}"
+          }
+        },
+        {
+          "name": "Crear equipo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('equipo_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/trm/equipos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"area_id\": \"{{area_id}}\",\n  \"codigo\": \"EQ-001\",\n  \"nombre\": \"Grúa Pórtico 1\",\n  \"tipo\": \"STS\",\n  \"ciclo_mtto_dias\": 30,\n  \"ultimo_mtto\": \"2026-03-01\",\n  \"proximo_mtto\": \"2026-04-01\",\n  \"estado\": \"OK\",\n  \"activo\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Obtener equipo por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/equipos/{{equipo_id}}"
+          }
+        },
+        {
+          "name": "Actualizar equipo",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/trm/equipos/{{equipo_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"Alerta\",\n  \"proximo_mtto\": \"2026-05-01\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar equipo",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/equipos/{{equipo_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "⚠️ Riesgos",
+      "item": [
+        {
+          "name": "Listar riesgos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('riesgo_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/riesgos?terminal_id={{terminal_id}}"
+          }
+        },
+        {
+          "name": "Crear riesgo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('riesgo_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/riesgos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"area_id\": \"{{area_id}}\",\n  \"responsable_id\": \"{{usuario_id}}\",\n  \"codigo\": \"RSG-001\",\n  \"nombre\": \"Falla en sistema de grúas\",\n  \"descripcion\": \"Riesgo de falla mecánica en grúas pórtico\",\n  \"categoria\": \"Operacional\",\n  \"probabilidad\": 3,\n  \"impacto\": 4,\n  \"nivel\": \"Alto\",\n  \"estado\": \"Activo\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Obtener riesgo por ID",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/riesgos/{{riesgo_id}}"
+          }
+        },
+        {
+          "name": "Actualizar riesgo",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/riesgos/{{riesgo_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"En revisión\",\n  \"justificacion_cambio_estado\": \"Se detectaron nuevas evidencias\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Historial de estados",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/riesgos/{{riesgo_id}}/historial"
+          }
+        },
+        {
+          "name": "Vincular control a riesgo",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/riesgos/{{riesgo_id}}/controles",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"control_id\": \"{{control_id}}\",\n  \"efectivo\": true,\n  \"observaciones\": \"Control verificado en auditoría\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Desvincular control de riesgo",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/riesgos/{{riesgo_id}}/controles/{{control_id}}"
+          }
+        },
+        {
+          "name": "Eliminar riesgo",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/riesgos/{{riesgo_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🚨 Incidentes",
+      "item": [
+        {
+          "name": "Listar incidentes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('incidente_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/incidentes?terminal_id={{terminal_id}}"
+          }
+        },
+        {
+          "name": "Crear incidente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('incidente_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/incidentes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"area_id\": \"{{area_id}}\",\n  \"equipo_id\": \"{{equipo_id}}\",\n  \"responsable_id\": \"{{usuario_id}}\",\n  \"codigo\": \"INC-001\",\n  \"titulo\": \"Derrame de combustible en muelle 3\",\n  \"descripcion\": \"Derrame menor detectado durante operación de carga\",\n  \"severidad\": \"Grave\",\n  \"estado\": \"Abierto\",\n  \"fecha_ocurrencia\": \"2026-04-25\",\n  \"hora_ocurrencia\": \"14:30:00\",\n  \"turno\": \"Tarde\",\n  \"causa_inmediata\": \"Falla en válvula de cierre\",\n  \"causa_raiz\": \"Falta de mantenimiento preventivo\",\n  \"lecciones_aprendidas\": \"Revisar protocolo de inspección de válvulas\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Obtener incidente por ID",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/incidentes/{{incidente_id}}"
+          }
+        },
+        {
+          "name": "Actualizar incidente",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/incidentes/{{incidente_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"En investigación\",\n  \"observaciones_internas\": \"Se inició investigación formal\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Historial de estados",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/incidentes/{{incidente_id}}/historial"
+          }
+        },
+        {
+          "name": "Eliminar incidente",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/incidentes/{{incidente_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Planes de Mitigación",
+      "item": [
+        {
+          "name": "Listar planes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('plan_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/planes?terminal_id={{terminal_id}}"
+          }
+        },
+        {
+          "name": "Crear plan",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('plan_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/planes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"riesgo_id\": \"{{riesgo_id}}\",\n  \"responsable_id\": \"{{usuario_id}}\",\n  \"codigo\": \"PLN-001\",\n  \"titulo\": \"Mantenimiento preventivo de grúas\",\n  \"descripcion\": \"Programa de mantenimiento trimestral\",\n  \"estado\": \"Pendiente\",\n  \"progreso\": 0,\n  \"fecha_inicio\": \"2026-05-01\",\n  \"fecha_limite\": \"2026-07-31\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Obtener plan por ID",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/planes/{{plan_id}}"
+          }
+        },
+        {
+          "name": "Actualizar plan",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/planes/{{plan_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"En progreso\",\n  \"progreso\": 25\n}"
+            }
+          }
+        },
+        {
+          "name": "Registrar avance",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/planes/{{plan_id}}/avance",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"progreso_nuevo\": 60,\n  \"estado_nuevo\": \"En progreso\",\n  \"nota\": \"Se completó la primera fase\",\n  \"nombre_usuario\": \"Carlos Ramírez\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Historial de avance",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/planes/{{plan_id}}/historial"
+          }
+        },
+        {
+          "name": "Eliminar plan",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/planes/{{plan_id}}"
+          }
+        },
+        {
+          "name": "Listar tareas del plan",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/planes/{{plan_id}}/tareas"
+          }
+        },
+        {
+          "name": "Crear tarea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('tarea_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/trm/planes/{{plan_id}}/tareas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Revisar documentación técnica\",\n  \"responsable\": \"Carlos Ramírez\",\n  \"fecha_limite\": \"2026-06-01\",\n  \"estado\": \"Pendiente\",\n  \"orden\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Actualizar tarea",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/trm/planes/{{plan_id}}/tareas/{{tarea_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"Completada\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar tarea",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/planes/{{plan_id}}/tareas/{{tarea_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📣 Escalamientos",
+      "item": [
+        {
+          "name": "Listar escalamientos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('escalamiento_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/escalamientos?terminal_id={{terminal_id}}"
+          }
+        },
+        {
+          "name": "Listar escalamientos pendientes",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/escalamientos?estado=Enviado"
+          }
+        },
+        {
+          "name": "Crear escalamiento",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('escalamiento_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/escalamientos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"creado_por\": \"{{usuario_id}}\",\n  \"codigo\": \"ESC-001\",\n  \"motivo\": \"Plan PLN-001 vencido sin completar\",\n  \"urgencia\": \"Alta\",\n  \"estado\": \"Enviado\",\n  \"nivel_escalamiento\": 1,\n  \"auto_generado\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Obtener escalamiento por ID",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/escalamientos/{{escalamiento_id}}"
+          }
+        },
+        {
+          "name": "Actualizar escalamiento",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/escalamientos/{{escalamiento_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nivel_escalamiento\": 2\n}"
+            }
+          }
+        },
+        {
+          "name": "Responder escalamiento",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/escalamientos/{{escalamiento_id}}/responder",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"respuesta_texto\": \"Se tomaron acciones correctivas inmediatas\",\n  \"respuesta_autor\": \"Gerente General\",\n  \"respuesta_usuario_id\": \"{{usuario_id}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Historial del escalamiento",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/escalamientos/{{escalamiento_id}}/historial"
+          }
+        },
+        {
+          "name": "Eliminar escalamiento",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/escalamientos/{{escalamiento_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "✅ Acciones Correctivas",
+      "item": [
+        {
+          "name": "Listar acciones",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('accion_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/acciones?terminal_id={{terminal_id}}"
+          }
+        },
+        {
+          "name": "Crear acción",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('accion_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/acciones",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"responsable_id\": \"{{usuario_id}}\",\n  \"titulo\": \"Revisión de protocolos de seguridad\",\n  \"descripcion\": \"Actualizar manual de procedimientos\",\n  \"estado\": \"Pendiente\",\n  \"fecha_limite\": \"2026-06-30\",\n  \"prioridad\": \"Alta\",\n  \"riesgo_id\": \"{{riesgo_id}}\",\n  \"escalamiento_id\": \"{{escalamiento_id}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Actualizar acción",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/acciones/{{accion_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"En progreso\",\n  \"prioridad\": \"Inmediata\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar acción",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/acciones/{{accion_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛡️ Controles",
+      "item": [
+        {
+          "name": "Listar controles",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('control_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/controles"
+          }
+        },
+        {
+          "name": "Crear control",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('control_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/controles",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Inspección visual diaria\",\n  \"descripcion\": \"Revisión visual de equipos al inicio de turno\",\n  \"tipo\": \"Preventivo\",\n  \"activo\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Actualizar control",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/controles/{{control_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"Detectivo\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar control",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/controles/{{control_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📊 KRI — Indicadores",
+      "item": [
+        {
+          "name": "Listar KRIs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('kri_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/kri?terminal_id={{terminal_id}}"
+          }
+        },
+        {
+          "name": "Crear KRI",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('kri_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/kri",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"nombre\": \"Tasa de incidentes por mes\",\n  \"descripcion\": \"Número de incidentes registrados mensualmente\",\n  \"unidad\": \"incidentes\",\n  \"umbral_alerta\": 5,\n  \"umbral_critico\": 10,\n  \"activo\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Actualizar KRI",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/kri/{{kri_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"umbral_alerta\": 4\n}"
+            }
+          }
+        },
+        {
+          "name": "Listar valores del KRI",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/kri/{{kri_id}}/valores"
+          }
+        },
+        {
+          "name": "Registrar valor de KRI",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/kri/{{kri_id}}/valores",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"periodo\": \"2026-04-01\",\n  \"valor\": 3,\n  \"estado\": \"OK\",\n  \"registrado_por\": \"{{usuario_id}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar KRI",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/kri/{{kri_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "💬 Comentarios",
+      "item": [
+        {
+          "name": "Listar comentarios de un riesgo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('comentario_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/comentarios?entidad_tipo=riesgo&entidad_id={{riesgo_id}}"
+          }
+        },
+        {
+          "name": "Listar comentarios de un incidente",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/comentarios?entidad_tipo=incidente&entidad_id={{incidente_id}}"
+          }
+        },
+        {
+          "name": "Crear comentario",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('comentario_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/comentarios",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"entidad_tipo\": \"riesgo\",\n  \"entidad_id\": \"{{riesgo_id}}\",\n  \"texto\": \"Se requiere revisión urgente antes del próximo turno\",\n  \"visible_para\": \"supervisores\",\n  \"autor_id\": \"{{usuario_id}}\",\n  \"nombre_autor\": \"Carlos Ramírez\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar comentario",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/comentarios/{{comentario_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔔 Notificaciones",
+      "item": [
+        {
+          "name": "Listar notificaciones del usuario",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('notificacion_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/notificaciones?usuario_id={{usuario_id}}"
+          }
+        },
+        {
+          "name": "Solo no leídas",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/notificaciones?usuario_id={{usuario_id}}&solo_no_leidas=true"
+          }
+        },
+        {
+          "name": "Marcar notificación como leída",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/notificaciones/{{notificacion_id}}/leer",
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          }
+        },
+        {
+          "name": "Marcar todas como leídas",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/notificaciones/leer-todas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario_id\": \"{{usuario_id}}\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📎 Adjuntos",
+      "item": [
+        {
+          "name": "Listar adjuntos de un riesgo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('adjunto_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/adjuntos?entidad_tipo=riesgo&entidad_id={{riesgo_id}}"
+          }
+        },
+        {
+          "name": "Registrar adjunto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('adjunto_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/adjuntos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"entidad_tipo\": \"riesgo\",\n  \"entidad_id\": \"{{riesgo_id}}\",\n  \"nombre_archivo\": \"informe_riesgo.pdf\",\n  \"tipo_mime\": \"application/pdf\",\n  \"tamano_bytes\": 204800,\n  \"url_almacenamiento\": \"https://storage.empresa.com/adjuntos/informe_riesgo.pdf\",\n  \"descripcion\": \"Informe técnico del riesgo\",\n  \"subido_por\": \"{{usuario_id}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar adjunto",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/adjuntos/{{adjunto_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📅 Reportes Programados",
+      "item": [
+        {
+          "name": "Listar reportes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('reporte_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/reportes?terminal_id={{terminal_id}}"
+          }
+        },
+        {
+          "name": "Crear reporte programado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('reporte_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/reportes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"nombre\": \"Reporte Ejecutivo Mensual\",\n  \"tipo\": \"ejecutivo_mensual\",\n  \"frecuencia\": \"mensual\",\n  \"dia_envio\": 1,\n  \"hora_envio\": \"08:00\",\n  \"destinatarios\": [\n    \"gerencia@empresa.com\",\n    \"riesgos@empresa.com\"\n  ],\n  \"formato\": \"pdf\",\n  \"activo\": true,\n  \"creado_por\": \"{{usuario_id}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Actualizar reporte",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/reportes/{{reporte_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"activo\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar reporte",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/reportes/{{reporte_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🗺️ Mapa",
+      "item": [
+        {
+          "name": "Listar zonas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('zona_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/mapa/zonas?terminal_id={{terminal_id}}"
+          }
+        },
+        {
+          "name": "Crear zona",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('zona_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/mapa/zonas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"nombre\": \"Zona Muelle Norte\",\n  \"nivel_riesgo\": \"Alto\",\n  \"orden\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Actualizar zona",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/mapa/zonas/{{zona_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nivel_riesgo\": \"Crítico\",\n  \"total_riesgos\": 3\n}"
+            }
+          }
+        },
+        {
+          "name": "Listar marcadores",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (Array.isArray(r) && r.length) pm.collectionVariables.set('marcador_id', r[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/mapa/marcadores?terminal_id={{terminal_id}}"
+          }
+        },
+        {
+          "name": "Crear marcador",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json(); if (r && r.id) pm.collectionVariables.set('marcador_id', r.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/mapa/marcadores",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"zona_id\": \"{{zona_id}}\",\n  \"lat\": 10.9685,\n  \"lng\": -74.7813,\n  \"titulo\": \"Grúa Pórtico #3\",\n  \"entidad_tipo\": \"riesgo\",\n  \"entidad_id\": \"{{riesgo_id}}\",\n  \"nivel\": \"Alto\",\n  \"color_hex\": \"#EF4444\",\n  \"pulsante\": true,\n  \"tooltip\": \"Riesgo de falla mecánica\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Actualizar marcador",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/mapa/marcadores/{{marcador_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nivel\": \"Medio\",\n  \"color_hex\": \"#F59E0B\",\n  \"pulsante\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar marcador",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/trm/mapa/marcadores/{{marcador_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📈 Dashboard",
+      "item": [
+        {
+          "name": "Métricas en tiempo real",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/dashboard"
+          }
+        },
+        {
+          "name": "Métricas cacheadas por terminal",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/dashboard/metricas?terminal_id={{terminal_id}}"
+          }
+        },
+        {
+          "name": "Guardar métricas cacheadas",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/dashboard/metricas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"periodo\": \"2026-04-01\",\n  \"total_riesgos_activos\": 12,\n  \"riesgos_criticos\": 2,\n  \"riesgos_altos\": 5,\n  \"riesgos_medios\": 3,\n  \"riesgos_bajos\": 2,\n  \"total_incidentes_mes\": 4,\n  \"incidentes_criticos_mes\": 1,\n  \"planes_activos\": 8,\n  \"planes_vencidos\": 1,\n  \"escalamientos_pendientes\": 2,\n  \"acciones_vencidas\": 0\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📝 Auditoría",
+      "item": [
+        {
+          "name": "Listar logs de auditoría",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/auditoria?terminal_id={{terminal_id}}"
+          }
+        },
+        {
+          "name": "Filtrar por tabla",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/trm/auditoria?tabla=riesgos"
+          }
+        },
+        {
+          "name": "Registrar evento de auditoría",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/trm/auditoria",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"terminal_id\": \"{{terminal_id}}\",\n  \"usuario_id\": \"{{usuario_id}}\",\n  \"accion\": \"UPDATE\",\n  \"tabla\": \"riesgos\",\n  \"registro_id\": \"{{riesgo_id}}\",\n  \"datos_anteriores\": \"{\\\"estado\\\":\\\"Activo\\\"}\",\n  \"datos_nuevos\": \"{\\\"estado\\\":\\\"En revisión\\\"}\",\n  \"modulo_registro_id\": \"{{riesgo_id}}\",\n  \"duracion_ms\": 45\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

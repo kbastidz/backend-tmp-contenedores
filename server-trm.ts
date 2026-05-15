@@ -230,7 +230,18 @@ fastify.get("/api/trm/riesgos/:id", async (req, rep) => {
   if (!row.length) return rep.status(404).send({ error: "Riesgo no encontrado" });
   // Planes, controles e incidentes vinculados
   const planes = await db.select().from(trm.planesMitigacion).where(eq(trm.planesMitigacion.riesgo_id, id));
-  const controles = await db.select().from(trm.riesgosControles).where(eq(trm.riesgosControles.riesgo_id, id));
+  const controles = await db.select({
+    id: trm.riesgosControles.id,
+    riesgo_id: trm.riesgosControles.riesgo_id,
+    control_id: trm.riesgosControles.control_id,
+    efectivo: trm.riesgosControles.efectivo,
+    observaciones: trm.riesgosControles.observaciones,
+    evaluado_en: trm.riesgosControles.evaluado_en,
+    control_nombre: trm.controles.nombre,
+  })
+    .from(trm.riesgosControles)
+    .innerJoin(trm.controles, eq(trm.riesgosControles.control_id, trm.controles.id))
+    .where(eq(trm.riesgosControles.riesgo_id, id));
   const historial = await db.select().from(trm.riesgosEstadosHistorial)
     .where(eq(trm.riesgosEstadosHistorial.riesgo_id, id))
     .orderBy(desc(trm.riesgosEstadosHistorial.creado_en));
@@ -241,6 +252,23 @@ fastify.patch("/api/trm/riesgos/:id", async (req, rep) => {
   if (!requireAuth(req, rep)) return;
   const { id } = req.params as { id: string };
   const body = req.body as any;
+  
+  // Obtener riesgo actual antes de actualizar
+  const [current] = await db.select().from(trm.riesgos).where(eq(trm.riesgos.id, id)).limit(1);
+  if (!current) return rep.status(404).send({ error: "Riesgo no encontrado" });
+  
+  // Verificar si el estado está cambiando
+  if (body.estado && body.estado !== current.estado) {
+    await db.insert(trm.riesgosEstadosHistorial).values({
+      riesgo_id: id,
+      estado_anterior: current.estado,
+      estado_nuevo: body.estado,
+      justificacion: body.justificacion_cambio_estado,
+      cambiado_por: req.user?.id,
+      nombre_usuario: req.user?.name,
+    });
+  }
+  
   if (body.probabilidad && body.impacto) body.score = body.probabilidad * body.impacto;
   body.actualizado_en = new Date();
   const [row] = await db.update(trm.riesgos).set(body).where(eq(trm.riesgos.id, id)).returning();
@@ -619,6 +647,29 @@ fastify.delete("/api/trm/riesgos/:riesgoId/controles/:controlId", async (req, re
     and(eq(trm.riesgosControles.riesgo_id, riesgoId), eq(trm.riesgosControles.control_id, controlId))
   );
   return { success: true };
+});
+
+// Listar controles asociados a un riesgo
+fastify.get("/api/trm/riesgos/:riesgoId/controles", async (req, rep) => {
+  if (!requireAuth(req, rep)) return;
+  const { riesgoId } = req.params as { riesgoId: string };
+  const rows = await db.select({
+    id: trm.riesgosControles.id,
+    riesgo_id: trm.riesgosControles.riesgo_id,
+    control_id: trm.riesgosControles.control_id,
+    efectivo: trm.riesgosControles.efectivo,
+    observaciones: trm.riesgosControles.observaciones,
+    evaluado_en: trm.riesgosControles.evaluado_en,
+    control_nombre: trm.controles.nombre,
+    control_descripcion: trm.controles.descripcion,
+    control_tipo: trm.controles.tipo,
+    control_activo: trm.controles.activo,
+  })
+    .from(trm.riesgosControles)
+    .innerJoin(trm.controles, eq(trm.riesgosControles.control_id, trm.controles.id))
+    .where(eq(trm.riesgosControles.riesgo_id, riesgoId))
+    .orderBy(trm.controles.nombre);
+  return rows;
 });
 
 // ============================================================

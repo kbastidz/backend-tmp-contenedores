@@ -336,8 +336,26 @@ fastify.get("/api/trm/incidentes/:id", async (req, rep) => {
 fastify.patch("/api/trm/incidentes/:id", async (req, rep) => {
   if (!requireAuth(req, rep)) return;
   const { id } = req.params as { id: string };
-  const body = { ...(req.body as any), actualizado_en: new Date() };
-  const [row] = await db.update(trm.incidentes).set(body).where(eq(trm.incidentes.id, id)).returning();
+  const body = req.body as any;
+  
+  // Obtener incidente actual antes de actualizar
+  const [current] = await db.select().from(trm.incidentes).where(eq(trm.incidentes.id, id)).limit(1);
+  if (!current) return rep.status(404).send({ error: "Incidente no encontrado" });
+  
+  // Verificar si el estado está cambiando
+  if (body.estado && body.estado !== current.estado) {
+    await db.insert(trm.incidentesEstadosHistorial).values({
+      incidente_id: id,
+      estado_anterior: current.estado,
+      estado_nuevo: body.estado,
+      justificacion: body.justificacion_cambio_estado,
+      cambiado_por: req.user?.id,
+      nombre_usuario: req.user?.name,
+    });
+  }
+  
+  const updatedBody = { ...body, actualizado_en: new Date() };
+  const [row] = await db.update(trm.incidentes).set(updatedBody).where(eq(trm.incidentes.id, id)).returning();
   return row;
 });
 

@@ -197,11 +197,16 @@ fastify.get("/api/trm/riesgos", async (req, rep) => {
   const responsableUser = alias(user, "responsable_user");
   const conditions: any[] = [];
   if (terminal_id) conditions.push(eq(trm.riesgos.terminal_id, terminal_id));
+  
+  // Subquery para verificar si el riesgo tiene planes
+  const tienePlanSubquery = sql`(SELECT COUNT(*) FROM ${trm.planesMitigacion} WHERE ${trm.planesMitigacion.riesgo_id} = ${trm.riesgos.id}) > 0`;
+  
   const rows = await db.select({
     ...getTableColumns(trm.riesgos),
     responsable_nombre: responsableUser.name,
     area_nombre:        trm.areas.nombre,
     terminal_nombre:    trm.terminal.nombre,
+    tiene_plan:         tienePlanSubquery,
   })
     .from(trm.riesgos)
     .leftJoin(responsableUser, eq(trm.riesgos.responsable_id, responsableUser.id))

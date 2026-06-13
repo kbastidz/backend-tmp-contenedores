@@ -56,6 +56,40 @@ fastify.addHook("onError", async (request, reply, error) => {
 fastify.register(cors, { origin: true, credentials: true });
 fastify.register(cookie);
 
+// ── Rutas de Better Auth ──────────────────────────────────────
+// Preflight OPTIONS explícito para CORS con frontends externos
+fastify.options("/api/auth/*", async (request, reply) => {
+  return reply.status(204).send();
+});
+
+fastify.all("/api/auth/*", async (request, reply) => {
+  const url = `${process.env.BETTER_AUTH_URL}${request.url}`;
+  const headers = new Headers();
+  for (const [k, v] of Object.entries(request.headers)) {
+    if (v) headers.set(k, Array.isArray(v) ? v.join(", ") : v);
+  }
+  const webRequest = new Request(url, {
+    method: request.method,
+    headers,
+    body: ["GET", "HEAD"].includes(request.method) ? undefined : JSON.stringify(request.body),
+  });
+  const res = await auth.handler(webRequest);
+  reply.status(res.status);
+  // Omitir headers CORS de Better Auth — @fastify/cors ya los agrega correctamente
+  const skipHeaders = new Set(["access-control-allow-origin", "access-control-allow-credentials", "access-control-allow-methods", "access-control-allow-headers"]);
+  res.headers.forEach((value, key) => {
+    if (!skipHeaders.has(key.toLowerCase())) {
+      reply.header(key, value);
+    }
+  });
+  const text = await res.text();
+  try {
+    return reply.send(JSON.parse(text));
+  } catch {
+    return reply.send(text);
+  }
+});
+
 // ── Auth middleware ───────────────────────────────────────────
 fastify.addHook("preHandler", async (request) => {
   const headers = new Headers();

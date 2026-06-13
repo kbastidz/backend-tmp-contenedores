@@ -16,7 +16,7 @@
     "server": "tsx server.ts",
     "server:trm": "tsx server-trm.ts",
     "server:all": "concurrently \"tsx server.ts\" \"tsx server-trm.ts\"",
-    "start": "concurrently \"tsx server.ts\" \"tsx server-trm.ts\""
+    "start": "tsx server.ts"
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.2",

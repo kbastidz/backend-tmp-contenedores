@@ -13,7 +13,12 @@ export const auth = betterAuth({
 			verification: schema.verification,
 		},
 	}),
-	trustedOrigins: ["http://localhost:3000", "http://localhost:3001"],
+	trustedOrigins: [
+		"http://localhost:3000",
+		"http://localhost:3001",
+		...(process.env.APP_URL ? [process.env.APP_URL] : []),
+		...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+	],
 	emailAndPassword: {
 		enabled: true,
 	},

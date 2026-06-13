@@ -38,4 +38,15 @@ export const auth = betterAuth({
 			maxAge: 5 * 60, // 5 minutos
 		},
 	},
+	advanced: {
+    crossSubdomainCookies: {
+      enabled: false,
+    },
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true,
+      httpOnly: true,
+      path: "/",
+    },
+  },
 });

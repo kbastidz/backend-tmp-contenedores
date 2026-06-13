@@ -17,7 +17,10 @@ export const auth = betterAuth({
 		"http://localhost:3000",
 		"http://localhost:3001",
 		...(process.env.APP_URL ? [process.env.APP_URL] : []),
-		...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+		// Soporta múltiples frontends separados por coma: "https://a.com,https://b.com"
+		...(process.env.FRONTEND_URL
+			? process.env.FRONTEND_URL.split(",").map((u) => u.trim())
+			: []),
 	],
 	emailAndPassword: {
 		enabled: true,

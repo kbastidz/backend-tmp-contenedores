@@ -57,12 +57,11 @@ fastify.register(cors, { origin: true, credentials: true });
 fastify.register(cookie);
 
 // ── Rutas de Better Auth ──────────────────────────────────────
-// Preflight OPTIONS explícito para CORS con frontends externos
-fastify.options("/api/auth/*", async (request, reply) => {
-  return reply.status(204).send();
-});
-
 fastify.all("/api/auth/*", async (request, reply) => {
+  // Responder preflight OPTIONS directamente para que @fastify/cors agregue los headers correctos
+  if (request.method === "OPTIONS") {
+    return reply.status(204).send();
+  }
   const url = `${process.env.BETTER_AUTH_URL}${request.url}`;
   const headers = new Headers();
   for (const [k, v] of Object.entries(request.headers)) {

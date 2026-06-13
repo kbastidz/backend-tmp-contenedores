@@ -38,12 +38,11 @@ declare module "fastify" {
 }
 
 // --- Rutas de Better Auth ---
-// Responder preflights OPTIONS manualmente para que CORS funcione con GitHub Pages y otros frontends
-fastify.options("/api/auth/*", async (request, reply) => {
-	return reply.status(204).send();
-});
-
 fastify.all("/api/auth/*", async (request, reply) => {
+	// Responder preflight OPTIONS directamente para que @fastify/cors agregue los headers correctos
+	if (request.method === "OPTIONS") {
+		return reply.status(204).send();
+	}
 	const url = `${process.env.BETTER_AUTH_URL}${request.url}`;
 	const headers = new Headers();
 	for (const [key, value] of Object.entries(request.headers)) {
@@ -56,7 +55,7 @@ fastify.all("/api/auth/*", async (request, reply) => {
 	});
 	const res = await auth.handler(webRequest);
 	reply.status(res.status);
-	// Reenviar headers de Better Auth pero omitir los CORS — ya los maneja @fastify/cors
+	// Omitir headers CORS de Better Auth — @fastify/cors ya los agrega correctamente
 	const skipHeaders = new Set(["access-control-allow-origin", "access-control-allow-credentials", "access-control-allow-methods", "access-control-allow-headers"]);
 	res.headers.forEach((value, key) => {
 		if (!skipHeaders.has(key.toLowerCase())) {

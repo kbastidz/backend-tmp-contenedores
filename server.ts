@@ -11,8 +11,23 @@ const fastify = Fastify({ logger: true });
 
 // --- Plugins ---
 fastify.register(cors, {
-	origin: true, // En producción, especifica tus dominios
-	credentials: true,
+  origin: (origin, cb) => {
+    const allowed = [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      ...(process.env.FRONTEND_URL
+        ? process.env.FRONTEND_URL.split(",").map((u) => u.trim())
+        : []),
+    ];
+    if (!origin || allowed.includes(origin)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Not allowed by CORS"), false);
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 });
 fastify.register(cookie);
 
@@ -39,10 +54,7 @@ declare module "fastify" {
 
 // --- Rutas de Better Auth ---
 fastify.all("/api/auth/*", async (request, reply) => {
-	// Responder preflight OPTIONS directamente para que @fastify/cors agregue los headers correctos
-	if (request.method === "OPTIONS") {
-		return reply.status(204).send();
-	}
+	
 	const url = `${process.env.BETTER_AUTH_URL}${request.url}`;
 	const headers = new Headers();
 	for (const [key, value] of Object.entries(request.headers)) {
@@ -55,13 +67,7 @@ fastify.all("/api/auth/*", async (request, reply) => {
 	});
 	const res = await auth.handler(webRequest);
 	reply.status(res.status);
-	// Omitir headers CORS de Better Auth — @fastify/cors ya los agrega correctamente
-	const skipHeaders = new Set(["access-control-allow-origin", "access-control-allow-credentials", "access-control-allow-methods", "access-control-allow-headers"]);
-	res.headers.forEach((value, key) => {
-		if (!skipHeaders.has(key.toLowerCase())) {
-			reply.header(key, value);
-		}
-	});
+	
 	const text = await res.text();
 	try {
 		return reply.send(JSON.parse(text));

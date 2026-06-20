@@ -38,6 +38,20 @@ fastify.register(cors, {
 });
 fastify.register(cookie);
 
+// Allow DELETE (and other methods) to send Content-Type: application/json with an empty body
+fastify.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, done) => {
+	if (!body || (body as string).trim() === "") {
+		done(null, undefined);
+	} else {
+		try {
+			done(null, JSON.parse(body as string));
+		} catch (err: any) {
+			err.statusCode = 400;
+			done(err, undefined);
+		}
+	}
+});
+
 // ── Hooks de logging ──────────────────────────────────────────
 fastify.addHook("onRequest", async (request) => {
 	requestStartTimes.set(request, Date.now());

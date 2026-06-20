@@ -76,6 +76,39 @@ fastify.addHook("preHandler", async (request, reply) => {
 	for (const [key, value] of Object.entries(request.headers)) {
 		if (value) headers.set(key, Array.isArray(value) ? value.join(", ") : value);
 	}
+
+	// Soporte para clientes cross-site (ej. GitHub Pages) que no pueden enviar cookies.
+	// Si viene un Bearer token en Authorization, lo buscamos directamente en la BD
+	// porque el token del body del sign-in es el campo `session.token`, no el valor
+	// completo de la cookie (que incluye la firma HMAC y no está disponible en el cliente).
+	const authHeader = request.headers["authorization"];
+	if (authHeader && typeof authHeader === "string" && authHeader.startsWith("Bearer ")) {
+		const token = authHeader.slice(7).trim();
+		if (token) {
+			const sessionRows = await db
+				.select()
+				.from(schema.session)
+				.where(eq(schema.session.token, token))
+				.limit(1);
+			if (sessionRows.length > 0) {
+				const session = sessionRows[0];
+				const now = new Date();
+				if (new Date(session.expiresAt) > now) {
+					const userRows = await db
+						.select()
+						.from(schema.user)
+						.where(eq(schema.user.id, session.userId))
+						.limit(1);
+					if (userRows.length > 0) {
+						request.user = userRows[0];
+						request.session = session;
+						return; // Autenticado, saltar el resto del preHandler
+					}
+				}
+			}
+		}
+	}
+
 	const session = await auth.api.getSession({ headers });
 	if (session) {
 		request.user = session.user;
